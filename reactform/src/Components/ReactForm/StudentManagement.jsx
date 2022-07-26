@@ -3,9 +3,17 @@ import { connect } from 'react-redux';
 
 class StudentManagement extends Component {
 
-    renderStudentList = () => {
+    state = { keyword: '' };
 
-        return this.props.studentList.map((ele, idx) => {
+    renderStudentList = () => {
+        const data = this.props.studentList.filter((ele) => {
+            return ele.fullName
+                .toLowerCase()
+                .trim()
+                .indexOf(this.state.keyword.toLowerCase().trim()) !== -1;
+        });
+
+        return data.map((ele, idx) => {
             const {
                 id,
                 studentId,
@@ -30,14 +38,27 @@ class StudentManagement extends Component {
                                 });
                             }}
                             className="btn btn-info mr-2">EDIT</button>
-                        <button className="btn btn-danger">DELETE</button>
+                        <button
+                            onClick={() => {
+                                this.props.dispatch({
+                                    type: 'DELETE_STUDENT',
+                                    payload: ele.id,
+                                });
+                            }}
+                            className="btn btn-danger"
+                        >DELETE</button>
                     </td>
                 </tr>
             );
         });
 
     };
-
+    handleOnChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value,
+        });
+    };
     render() {
         return (
             < div className="card p-0 mt-3" >
@@ -46,6 +67,8 @@ class StudentManagement extends Component {
                     <div className="col-4">
                         <div className="form-group mb-0">
                             <input
+                                onChange={this.handleOnChange}
+                                name="keyword"
                                 type="text"
                                 placeholder="Search by full name..."
                                 className="form-control"

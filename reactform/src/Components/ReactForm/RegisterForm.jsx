@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
+
+const DEFAULT_VALUES = {
+    id: '',
+    studentId: '',
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+};
 
 class RegisterForm extends Component {
     state = {
-        values: {
-            id: '',
-            studentId: '',
-            fullName: '',
-            email: '',
-            phoneNumber: '',
-        },
+        values: DEFAULT_VALUES,
         errors: {
             id: '',
             studentId: '',
@@ -19,6 +21,21 @@ class RegisterForm extends Component {
         },
 
     };
+
+    formRef = createRef;
+
+    static getDerivedStateFromProps(nextProps, currentState) {
+        if (nextProps.selectedStudent
+            && currentState.values.id
+            !== nextProps.selectedStudent.id) {
+            currentState.values = nextProps.selectedStudent;
+
+        }
+
+        return currentState;
+    };
+
+
 
     handleOnChange = (event) => {
         const { name, value } = event.target;
@@ -34,17 +51,21 @@ class RegisterForm extends Component {
     handleOnSubmit = (event) => {
         event.preventDefault();
 
-        for (const key in this.state.errors) {
-            const erMessage = this.state.errors[key];
 
-            if (erMessage) {
-                return alert(`Please fill in required fill(s)`);
-            }
+
+        if (!event.target.checkValidity()) {
+            return alert(`Please fill in required fill(s)`);
         }
 
         this.props.dispatch({
-            type: 'ADD_STUDENT',
+            type: this.props.selectedStudent ? 'UPDATE_STUDENTS' : 'ADD_STUDENT',
             payload: this.state.values,
+        });
+
+        this.setState({
+            values: DEFAULT_VALUES,
+        }, () => {
+            this.forceUpdate();
         });
 
     };
@@ -80,27 +101,39 @@ class RegisterForm extends Component {
                 ...this.state.errors,
                 [name]: erMessage,
             }
+        }, () => {
+            this.forceUpdate();
         });
-
     };
 
 
+
     render() {
+        const { studentId,
+            fullName,
+            phoneNumber,
+            email,
+        } = this.state.values || {};
+
         return (
             <div className="card p-0">
                 <div className="card-header bg-dark text-white font-weight-bold">
                     Student Information
                 </div>
+                <span className='text-danger'>(*) are required fills</span>
                 <div className="card-body">
 
                     <form
+                        ref={this.formRef}
                         noValidate
                         onSubmit={this.handleOnSubmit}>
                         <div className="row">
                             <div className="col-6">
                                 <div className="form-group">
                                     <label>Student ID</label>
+                                    <span className='text-danger'>*</span>
                                     <input
+                                        value={studentId}
                                         type="text"
                                         className="form-control"
                                         name='studentId'
@@ -123,7 +156,9 @@ class RegisterForm extends Component {
                             <div className="col-6">
                                 <div className="form-group">
                                     <label>Full Name</label>
+                                    <span className='text-danger'>*</span>
                                     <input
+                                        value={fullName}
                                         type="text"
                                         className="form-control"
                                         name='fullName'
@@ -147,7 +182,9 @@ class RegisterForm extends Component {
                             <div className="col-6">
                                 <div className="form-group">
                                     <label>Phone Number</label>
+                                    <span className='text-danger'>*</span>
                                     <input
+                                        value={phoneNumber}
                                         type="text"
                                         className="form-control"
                                         name='phoneNumber'
@@ -171,7 +208,9 @@ class RegisterForm extends Component {
                             <div className="col-6">
                                 <div className="form-group">
                                     <label>Email</label>
+                                    <span className='text-danger'>*</span>
                                     <input
+                                        value={email}
                                         type="text"
                                         className="form-control"
                                         name='email'
@@ -192,7 +231,11 @@ class RegisterForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <button className="btn btn-outline-success ">Add Student</button>
+                        <button
+                            //đã có validation và quăng lỗi nên nghĩ không cần thiết disable
+                            // disabled={this.handleOnBlur.erMessage !== ''}
+                            className="btn btn-outline-success ">Save Student
+                        </button>
                     </form>
                 </div>
 
@@ -202,10 +245,10 @@ class RegisterForm extends Component {
     }
 }
 
-// const mapStateToProps = (state) => {
-//     return {
-//         ...state.formReducer
-//     };
-// };
+const mapStateToProps = (state) => {
+    return {
+        ...state.formReducer
+    };
+};
 
-export default connect()(RegisterForm);
+export default connect(mapStateToProps)(RegisterForm);
