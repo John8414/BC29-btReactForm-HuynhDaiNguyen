@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
+import { addStudentAction, updateStudentAction } from '../../Store/actions/studentAction';
 
 const DEFAULT_VALUES = {
     id: '',
@@ -12,13 +13,7 @@ const DEFAULT_VALUES = {
 class RegisterForm extends Component {
     state = {
         values: DEFAULT_VALUES,
-        errors: {
-            id: '',
-            studentId: '',
-            fullName: '',
-            email: '',
-            phoneNumber: '',
-        },
+        errors: DEFAULT_VALUES,
 
     };
 
@@ -57,10 +52,16 @@ class RegisterForm extends Component {
             return alert(`Please fill in required fill(s)`);
         }
 
-        this.props.dispatch({
-            type: this.props.selectedStudent ? 'UPDATE_STUDENTS' : 'ADD_STUDENT',
-            payload: this.state.values,
-        });
+        // this.props.dispatch({
+        //     type: this.props.selectedStudent ? 'UPDATE_STUDENTS' : 'ADD_STUDENT',
+        //     payload: this.state.values,
+        // });
+
+        if (this.props.selectedStudent) {
+            this.props.dispatch(updateStudentAction(this.state.values));
+        } else {
+            this.props.dispatch(addStudentAction(this.state.values));
+        }
 
         this.setState({
             values: DEFAULT_VALUES,

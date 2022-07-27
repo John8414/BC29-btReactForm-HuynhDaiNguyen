@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { deleteStudentAction, setSelectedStudentAction } from '../../Store/actions/studentAction';
+// import { DELETE_STUDENT, SET_SELECTED_STUDENT } from '../../Store/types/studentForm';
 
 class StudentManagement extends Component {
 
@@ -32,18 +34,16 @@ class StudentManagement extends Component {
                     <td>
                         <button
                             onClick={() => {
-                                this.props.dispatch({
-                                    type: 'SET_SELECTED_STUDENT',
-                                    payload: ele,
-                                });
+                                this.props.dispatch(
+                                    setSelectedStudentAction(ele)
+                                );
                             }}
                             className="btn btn-info mr-2">EDIT</button>
                         <button
                             onClick={() => {
-                                this.props.dispatch({
-                                    type: 'DELETE_STUDENT',
-                                    payload: ele.id,
-                                });
+                                this.props.dispatch(
+                                    deleteStudentAction(ele.id)
+                                );
                             }}
                             className="btn btn-danger"
                         >DELETE</button>

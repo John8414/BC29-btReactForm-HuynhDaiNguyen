@@ -1,3 +1,4 @@
+import { ADD_STUDENT, DELETE_STUDENT, SET_SELECTED_STUDENT, UPDATE_STUDENTS } from "../types/studentForm";
 
 const DEFAULT_STATE = {
     studentList: [
@@ -40,7 +41,7 @@ export const formReducer = (state = DEFAULT_STATE, { type, payload }) => {
 
 
     switch (type) {
-        case 'ADD_STUDENT': {
+        case ADD_STUDENT: {
 
             const data = [...state.studentList];
             data.push({ ...payload, id: Date.now(), });
@@ -48,7 +49,7 @@ export const formReducer = (state = DEFAULT_STATE, { type, payload }) => {
 
             return { ...state };
         }
-        case 'UPDATE_STUDENTS': {
+        case UPDATE_STUDENTS: {
             state.studentList = state.studentList.map(
                 ele => ele.id === payload.id ? payload : ele
             );
@@ -56,10 +57,10 @@ export const formReducer = (state = DEFAULT_STATE, { type, payload }) => {
 
             return { ...state };
         }
-        case 'SET_SELECTED_STUDENT': {
+        case SET_SELECTED_STUDENT: {
             return { ...state, selectedStudent: payload };
         }
-        case 'DELETE_STUDENT': {
+        case DELETE_STUDENT: {
             const data = [...state.studentList];
             const idx = data.findIndex((ele) => ele.id === payload);
             if (idx !== -1) {
