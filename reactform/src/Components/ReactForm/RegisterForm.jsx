@@ -72,6 +72,9 @@ class RegisterForm extends Component {
     };
 
     handleOnBlur = (event) => {
+        console.log(event);
+
+
         const { name,
             title,
             minLength,
@@ -83,11 +86,31 @@ class RegisterForm extends Component {
                 tooLong, }
         } = event.target;
 
+
+
         let erMessage = '';
 
-        if (patternMismatch) {
-            erMessage = `${title} email must be in a proper format eg: nguyen@gmail.com`;
+        // const isExist = () => {
+        //     const data = this.props.studentList.filter((ele) => {
+        //         return ele.studentId.indexOf(this.state) !== -1;
+        //     });
+
+        //     return data.map((ele, idx) => {
+        //         ele.studentId;
+        //     });
+        // };
+
+        // if (title === 'Student ID' && isExist) {
+        //     erMessage = ` The student ID must be unique`;
+        // }
+
+        if (title === 'Phone Number' && patternMismatch) {
+            erMessage = `Phone Number must be number only eg: 1234567890`;
         }
+        if (title === 'Email' && patternMismatch) {
+            erMessage = `Email must be in a proper format eg: haha@mail.com`;
+        }
+
 
         if (tooShort || tooLong) {
             erMessage = `${title} need to be from ${minLength} to ${maxLength} characters`;
@@ -186,7 +209,8 @@ class RegisterForm extends Component {
                                     <span className='text-danger'>*</span>
                                     <input
                                         value={phoneNumber}
-                                        type="text"
+                                        type="tel"
+                                        pattern='[0-9]{4}[0-9]{3}[0-9]{3}'
                                         className="form-control"
                                         name='phoneNumber'
                                         title='Phone Number'

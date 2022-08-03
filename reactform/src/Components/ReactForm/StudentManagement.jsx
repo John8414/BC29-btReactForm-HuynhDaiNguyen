@@ -29,8 +29,8 @@ class StudentManagement extends Component {
                     <td>{idx + 1}</td>
                     <td>{studentId}</td>
                     <td>{fullName}</td>
-                    <td>{email}</td>
                     <td>{phoneNumber}</td>
+                    <td>{email}</td>
                     <td>
                         <button
                             onClick={() => {
